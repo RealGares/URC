@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <title>URC - Ultimate Racing Championship</title>
+    <style>
+        :root {
+            --primary: #ff0000;
+            --secondary: #1e1e1e;
+            --accent: #ffd700;
+            --text: #ffffff;
+            --background: #121212;
+            --card-bg: #1e1e1e;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes gradientBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 1rem 5%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientBg 3s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            animation: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin: 0 1rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-btn {
+            background: linear-gradient(90deg, var(--primary), #ff4d4d);
+            color: var(--text);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text);
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: url('assets/images/background.jpg') no-repeat center center/cover;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.7));
+            z-index: 1;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 800px;
+            padding: 2rem;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            margin-bottom: 2.5rem;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 0.3s;
+        }
+
+        .hero-cta {
+            opacity: 0;
+            animation: fadeIn 1s ease forwards 0.6s;
+        }
+
+        .hero-cta .cta-btn {
+            font-size: 1.2rem;
+            padding: 1rem 2.5rem;
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            animation: float 2s infinite ease-in-out;
+            cursor: pointer;
+        }
+
+        .scroll-down svg {
+            width: 30px;
+            height: 30px;
+            color: var(--text);
+        }
+
+        section {
+            padding: 6rem 5%;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: var(--primary);
+        }
+
+        .about {
+            background-color: var(--secondary);
+        }
+
+        .about-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .about-text {
+            flex: 1;
+            opacity: 0;
+        }
+
+        .about-text.animated {
+            animation: slideInLeft 1s ease forwards;
+        }
+
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .about-text p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .about-image {
+            flex: 1;
+            border-radius: 10px;
+            overflow: hidden;
+            opacity: 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            outline: transparent;
+        }
+
+        .about-image.animated {
+            animation: slideInRight 1s ease forwards;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.5s ease;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .features {
+            text-align: center;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .feature-card.animated {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-desc {
+            color: #aaa;
+            line-height: 1.6;
+        }
+
+        .calendar {
+            background-color: var(--secondary);
+        }
+
+        .race-timeline {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .race-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background-color: var(--primary);
+        }
+
+        .race-event {
+            position: relative;
+            margin-bottom: a 3rem;
+            opacity: 0;
+        }
+
+        .race-event:last-child {
+            margin-bottom: 0;
+        }
+
+        .race-event.left {
+            left: -5%;
+        }
+
+        .race-event.right {
+            left: 55%;
+        }
+
+        .race-event.animated {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .race-date {
+            position: absolute;
+            top: 0;
+            font-size: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: var(--accent);
+            color: #000;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .race-event.left .race-date {
+            right: -160px;
+        }
+
+        .race-event.right .race-date {
+            left: -160px;
+        }
+
+        .race-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+        }
+
+        .race-name {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .race-location {
+            margin-bottom: 1rem;
+            color: #ccc;
+        }
+
+        .race-desc {
+            line-height: 1.6;
+        }
+
+        .drivers .section-title {
+            margin-bottom: 3rem;
+        }
+
+        .drivers-slider {
+            position: relative;
+            overflow: hidden;
+            padding: 2rem 0;
+        }
+
+        .drivers-wrapper {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .driver-card {
+            min-width: 400px;
+            margin: 0 1rem;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            transform: scale(0.9);
+            opacity: 0.7;
+        }
+
+        .driver-card.active {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .driver-image {
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .driver-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .driver-card:hover .driver-image img {
+            transform: scale(1.1);
+        }
+
+        .driver-info {
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .driver-name {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .driver-team {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .driver-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 1rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .slider-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+            gap: 1rem;
+        }
+
+        .slider-btn {
+            background-color: var(--card-bg);
+            color: var(--text);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .slider-btn:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .signup {
+            background: linear-gradient(rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.9)), url('/api/placeholder/1920/1080') no-repeat center center/cover;
+            text-align: center;
+        }
+
+        .signup-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--card-bg);
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+        }
+
+        .signup-form.animated {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: #7a7a7a;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(90deg, var(--primary), #ff4d4d);
+            color: var(--text);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+        }
+
+        .contact {
+            background-color: var(--secondary);
+        }
+
+        .contact-container {
+            display: flex;
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .contact-info {
+            flex: 1;
+            opacity: 0;
+        }
+
+        .contact-info.animated {
+            animation: slideInLeft 1s ease forwards;
+        }
+
+        .contact-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+        }
+
+        .contact-details {
+            margin-bottom: 2rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-icon {
+            margin-right: 1rem;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .contact-text {
+            line-height: 1.6;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .contact-form {
+            flex: 1;
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+        }
+
+        .contact-form.animated {
+            animation: slideInRight 1s ease forwards;
+        }
+
+        .contact-form h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            padding: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        footer {
+            background-color: #0a0a0a;
+            padding: 3rem 5%;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-logo h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-logo p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            margin-left: 5px;
+        }
+
+        .footer-newsletter {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .footer-newsletter h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .footer-newsletter p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+        }
+
+        .newsletter-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: var(--primary);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            background-color: #ff2d2d;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            color: #777;
+        }
+
+        @media screen and (max-width: 1024px) {
+            .hero-title {
+                font-size: 3rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.3rem;
+            }
+
+            .about-content {
+                flex-direction: column;
+                gap: 2rem;
+            }
+
+            .contact-container {
+                flex-direction: column;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                right: -100%;
+                top: 80px;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--secondary);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.5s ease;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links ul {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links li {
+                margin: 1.5rem 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hamburger.active div:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 6px);
+            }
+
+            .hamburger.active div:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active div:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -6px);
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .race-timeline::before {
+                left: 20px;
+            }
+
+            .race-event.left, .race-event.right {
+                left: 0;
+                width: 100%;
+            }
+
+            .race-content {
+                max-width: 100%;
+                margin-left: 60px;
+            }
+
+            .race-event.left .race-date, .race-event.right .race-date {
+                left: 0;
+            }
+        }
+
+        @media screen and (max-width: 576px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            section {
+                padding: 4rem 5%;
+            }
+
+            .signup-form {
+                padding: 2rem;
+            }
+        }
+
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--secondary);
+            z-index: 9999;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .page-transition.active {
+            transform: translateY(0);
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.7);
+            transition: all 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-footer {
+            text-align: right;
+        }
+
+        .scrollTop {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: var(--text);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .scrollTop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scrollTop:hover {
+            background-color: #ff2d2d;
+            transform: translateY(-5px);
+        }
+
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--background);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+
+        .preloader.fade {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader {
+            width: 100px;
+            height: 100px;
+            border: 5px solid var(--card-bg);
+            border-radius: 50%;
+            border-top: 5px solid var(--primary);
+            animation: spin 1s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader">
+        <div class="loader"></div>
+    </div>
+    
+    <!-- Page Transition -->
+    <div class="page-transition"></div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <img src="assets/images/logo.png" alt="URC Logo">
+            <h1>URC</h1>
+        </div>
+        <div class="nav-links">
+            <ul>
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="drivers.html">Drivers</a></li>
+                <li><a href="calendar.html">Calendar</a></li>
+                <li><a href="standings.html">Standings</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="rules.html">Rules</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+        <a href="signup.html" class="cta-btn">Join Now</a>
+        <div class="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">ULTIMATE RACING CHAMPIONSHIP</h1>
+            <p class="hero-subtitle">Experience the thrill of F1 racing with the most competitive league of 2025</p>
+            <div class="hero-cta">
+                <a href="signup.html" class="cta-btn">Join The Grid</a>
+            </div>
+        </div>
+        <div class="scroll-down">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7" />
+            </svg>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section class="about" id="about">
+        <h2 class="section-title">About URC</h2>
+        <div class="about-content">
+            <div class="about-text">
+                <h3>The Ultimate Racing Challenge</h3>
+                <p>URC is the premier F1 racing league of the 2025 season, bringing together the most talented virtual
+                    drivers from around the world to compete in a high-stakes championship.</p>
+                <p>Founded in 2025, our league has quickly become known for its professional organization, competitive
+                    racing, and vibrant community. We use the latest F1 25 game to create an authentic racing experience
+                    that mirrors the real-world Formula 1 championship.</p>
+                <p>With races held weekly on custom-tailored circuits and a comprehensive scoring system, URC offers a
+                    complete racing experience for both competitors and spectators.</p>
+                <a href="about.html" class="cta-btn">Learn More</a>
+            </div>
+            <div class="about-image">
+                <video src="assets/images/video.mp4" autoplay="true" muted loop alt="Racing Action">
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="features">
+        <h2 class="section-title">Why Choose URC</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon
+                            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                        </polygon>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Professional Organization</h3>
+                <p class="feature-desc">Our league is managed by experienced organizers to ensure fair competition and
+                    smooth operation throughout the season.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Consistent Race Schedule</h3>
+                <p class="feature-desc">Race every week at the same time so you can plan ahead and never miss the action on
+                    the track.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="9" cy="7" r="4"></circle>
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Vibrant Community</h3>
+                <p class="feature-desc">Join a passionate community of F1 enthusiasts who share your love for racing and
+                    competition.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Live Streaming</h3>
+                <p class="feature-desc">All races are streamed live with professional commentary, allowing fans to follow
+                    every moment of the action.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="feature-title">Detailed Rulebook</h3>
+                <p class="feature-desc">Our comprehensive rulebook ensures fair competition and clear guidelines for all
+                    participants.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Drivers Section -->
+    <section class="drivers" id="drivers">
+        <h2 class="section-title">Meet The Drivers</h2>
+        <div class="drivers-slider">
+            <div class="drivers-wrapper">
+                <div class="driver-card">
+                    <div class="driver-image">
+                        <img src="assets/images/driver_1.png" alt="Driver 1">
+                    </div>
+                    <div class="driver-info">
+                        <h3 class="driver-name">Jonno</h3>
+                        <p class="driver-team">Oracle Red Bull Racing</p>
+                        <p>The league owner. Very fast on-track with exceptional consistency and minimal tyre-wear.</p>
+                        <div class="driver-stats">
+                            <div class="stat">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">WINS</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">PODIUMS</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">POLES</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="driver-card">
+                    <div class="driver-image">
+                        <img src="assets/images/driver_2.png" alt="Driver 2">
+                    </div>
+                    <div class="driver-info">
+                        <h3 class="driver-name">Meowsy</h3>
+                        <p class="driver-team">Scuderia Ferrari HP</p>
+                        <p>Veteran driver known for his insane qualifying and race pace.</p>
+                        <div class="driver-stats">
+                            <div class="stat">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">WINS</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">PODIUMS</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">POLES</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="driver-card active">
+                    <div class="driver-image">
+                        <img src="assets/images/driver_3.png" alt="Klunky">
+                    </div>
+                    <div class="driver-info">
+                        <h3 class="driver-name">Klunky</h3>
+                        <p class="driver-team">Ferrari</p>
+                        <p>Co-Founder of URC. Consistent and dedicated to improving race-after-race.</p>
+                        <div class="driver-stats">
+                            <div class="stat">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">WINS</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">PODIUMS</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">0</div>
+                                <div class="stat-label">POLES</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slider-controls">
+                <button class="slider-btn prev-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <button class="slider-btn next-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div class="text-center" style="margin-top: 2rem; text-align: center;">
+            <a href="drivers.html" class="cta-btn">View All Drivers</a>
+        </div>
+    </section>
+    
+    <!-- Signup Section -->
+    <section class="signup" id="signup">
+        <h2 class="section-title">Join The Grid</h2>
+        <div class="signup-form">
+            <form id="registration-form" action="https://formspree.io/f/garesplayzz12@gmail.com" method="POST">
+                <div class="form-group">
+                    <label for="name" class="form-label">Full Name</label>
+                    <input type="text" id="name" name="name" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="discord" class="form-label">Discord Username</label>
+                    <input type="text" id="discord" name="discord" class="form-input" required>
+                </div>
+                <div class="form-group">
+                    <label for="platform" class="form-label">Gaming Platform</label>
+                    <select id="platform" name="platform" class="form-input form-select" required>
+                        <option value="">Select Platform</option>
+                        <option value="PC-steam">PC (Steam)</option>
+                        <option value="PC-ea">PC (EA Play)</option>
+                        <option value="PlayStation">PlayStation</option>
+                        <option value="Xbox">Xbox</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="experience" class="form-label">Racing Experience</label>
+                    <select id="experience" name="experience" class="form-input form-select" required>
+                        <option value="">Select Experience Level</option>
+                        <option value="Beginner">Beginner (0-6 months)</option>
+                        <option value="Intermediate">Intermediate (6-18 months)</option>
+                        <option value="Experienced">Experienced (18+ months)</option>
+                        <option value="Professional">Professional</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Assists</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="assist-racing-line" name="assists" value="racing-line">
+                            <label for="assist-racing-line">Racing Line</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="assist-abs" name="assists" value="abs">
+                            <label for="assist-abs">ABS</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="assist-traction-medium" name="assists" value="traction-medium">
+                            <label for="assist-traction-medium">Medium Traction</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="assist-traction-full" name="assists" value="traction-full">
+                            <label for="assist-traction-full">Full Traction</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="assist-gearbox" name="assists" value="gearbox">
+                            <label for="assist-gearbox">Automatic Gearbox</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="assist-none" name="assists" value="none">
+                            <label for="assist-none">No Assists</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="message" class="form-label">Why do you want to join URC?</label>
+                    <textarea id="message" name="message" class="form-input form-textarea" required></textarea>
+                </div>
+                <input type="hidden" name="_format" value="plain">
+                <input type="hidden" name="_subject" value="URC Sign-up from {{name}}">
+                <input type="hidden" name="_body" value="Sign-up from {{name}}:%0A* Discord Username: {{discord}}%0A* Gaming Platform: {{platform}}%0A* Racing Experience: {{experience}}%0A* Assists: {{assists}}%0A* Why they want to join: {{message}}">
+                <input type="hidden" name="_next" value="thank-you.html">
+                <button type="submit" class="submit-btn">Submit Application</button>
+            </form>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>URC</h2>
+                <p>Ultimate Racing Championship - The premier F1 25 racing competition for virtual drivers.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="drivers.html">Drivers</a></li>
+                    <li><a href="calendar.html">Calendar</a></li>
+                    <li><a href="standings.html">Standings</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="rules.html">Rules & Regulations</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="signup.html">Join The League</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-newsletter">
+                <h3>Subscribe to Our Newsletter</h3>
+                <p>Stay updated with the latest news, race results, and special announcements.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" class="newsletter-input" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Ultimate Racing Championship (URC). All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- Scroll to Top Button -->
+    <div class="scrollTop">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Success!</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Your form has been submitted successfully. We will get back to you soon!</p>
+            </div>
+            <div class="modal-footer">
+                <button class="cta-btn modal-close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            emailjs.init({
+                publicKey: "q2-oXb6RX6KjNz91t",
+            });
+        })();
+
+        // DOM Elements
+            const preloader = document.querySelector('.preloader');
+            const pageTransition = document.querySelector('.page-transition');
+            const nav = document.querySelector('nav');
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            const scrollDownBtn = document.querySelector('.scroll-down');
+            const scrollTopBtn = document.querySelector('.scrollTop');
+            const featureCards = document.querySelectorAll('.feature-card');
+            const aboutText = document.querySelector('.about-text');
+            const aboutImage = document.querySelector('.about-image');
+            const raceEvents = document.querySelectorAll('.race-event');
+            const signupForm = document.querySelector('.signup-form');
+            const contactInfo = document.querySelector('.contact-info');
+            const contactForm = document.querySelector('.contact-form');
+            const modal = document.querySelector('.modal');
+            const modalCloseBtn = document.querySelectorAll('.modal-close, .modal-close-btn');
+            const sliderWrapper = document.querySelector('.drivers-wrapper');
+            const driverCards = document.querySelectorAll('.driver-card');
+            const prevBtn = document.querySelector('.prev-btn');
+            const nextBtn = document.querySelector('.next-btn');
+            const forms = document.querySelectorAll('form');
+
+            const registrationForm = document.getElementById('registration-form');
+            const contactFormElement = document.getElementById('contact-form');
+
+            let currentSlide = 1;
+            const slideWidth = 300 + 32;
+
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    preloader.classList.add('fade');
+                }, 500);
+            });
+
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+
+                if (window.scrollY > 500) {
+                    scrollTopBtn.classList.add('active');
+                } else {
+                    scrollTopBtn.classList.remove('active');
+                }
+
+                animateOnScroll();
+            });
+
+            scrollDownBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: window.innerHeight,
+                    behavior: 'smooth'
+                });
+            });
+
+            scrollTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            function animateOnScroll() {
+                featureCards.forEach((card, index) => {
+                    const cardTop = card.getBoundingClientRect().top;
+                    if (cardTop < window.innerHeight - 100) {
+                        card.classList.add('animated');
+                        card.style.animationDelay = `${index * 0.1}s`;
+                    }
+                });
+
+                if (aboutText && aboutImage) {
+                    const aboutTextTop = aboutText.getBoundingClientRect().top;
+                    if (aboutTextTop < window.innerHeight - 100) {
+                        aboutText.classList.add('animated');
+                        aboutImage.classList.add('animated');
+                    }
+                }
+
+                raceEvents.forEach((event, index) => {
+                    const eventTop = event.getBoundingClientRect().top;
+                    if (eventTop < window.innerHeight - 100) {
+                        event.classList.add('animated');
+                        event.style.animationDelay = `${index * 0.2}s`;
+                    }
+                });
+
+                if (signupForm) {
+                    const signupFormTop = signupForm.getBoundingClientRect().top;
+                    if (signupFormTop < window.innerHeight - 100) {
+                        signupForm.classList.add('animated');
+                    }
+                }
+
+                if (contactInfo && contactForm) {
+                    const contactInfoTop = contactInfo.getBoundingClientRect().top;
+                    if (contactInfoTop < window.innerHeight - 100) {
+                        contactInfo.classList.add('animated');
+                        contactForm.classList.add('animated');
+                    }
+                }
+            }
+
+            setTimeout(() => {
+                animateOnScroll();
+            }, 1000);
+
+            if (prevBtn && nextBtn && sliderWrapper) {
+                updateSlider();
+
+                prevBtn.addEventListener('click', () => {
+                    if (currentSlide > 0) {
+                        currentSlide--;
+                        updateSlider();
+                    }
+                });
+
+                nextBtn.addEventListener('click', () => {
+                    if (currentSlide < driverCards.length - 1) {
+                        currentSlide++;
+                        updateSlider();
+                    }
+                });
+            }
+
+            function updateSlider() {
+                sliderWrapper.style.transform = `translateX(-${currentSlide * slideWidth}px)`;
+
+                driverCards.forEach((card, index) => {
+                    if (index === currentSlide) {
+                        card.classList.add('active');
+                    } else {
+                        card.classList.remove('active');
+                    }
+                });
+
+                if (currentSlide === 0) {
+                    prevBtn.style.opacity = '0.5';
+                    prevBtn.style.cursor = 'not-allowed';
+                } else {
+                    prevBtn.style.opacity = '1';
+                    prevBtn.style.cursor = 'pointer';
+                }
+
+                if (currentSlide === driverCards.length - 1) {
+                    nextBtn.style.opacity = '0.5';
+                    nextBtn.style.cursor = 'not-allowed';
+                } else {
+                    nextBtn.style.opacity = '1';
+                    nextBtn.style.cursor = 'pointer';
+                }
+            }
+
+            modalCloseBtn.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    modal.classList.remove('active');
+                });
+            });
+
+            if (registrationForm) {
+                registrationForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    const name1 = document.getElementById('name').value
+                    const email = document.getElementById('email').value;
+                    const discord = document.getElementById('discord').value;
+                    const platform = document.getElementById('platform').value;
+                    const experience = document.getElementById('experience').value;
+
+                    const assistsCheckboxes = document.querySelectorAll('input[name="assists"]:checked');
+                    const assists = Array.from(assistsCheckboxes).map(checkbox => checkbox.value).join(', ');
+
+                    const message = document.getElementById('message').value;
+
+                    const templateParams = {
+                        name: name1,
+                        email: 'garesplayzz12@gmail.com',
+                        discord_username: discord,
+                        gaming_platform: platform,
+                        racing_experience: experience,
+                        assists: assists,
+                        join_reason: message,
+                        subject: `URC Sign-up from ${name}`
+                    };
+
+                    emailjs.send('service_ytz5nzk', 'template_xz90dmn', templateParams)
+                        .then(function(response) {
+                            console.log('SUCCESS!', response.status, response.text);
+                            modal.classList.add('active');
+                            registrationForm.reset();
+                        }, function(error) {
+                            console.log('FAILED...', error);
+                            alert('There was an error submitting your application. Please try again soon.');
+                        });
+                });
+            }
+
+            if (contactFormElement) {
+                contactFormElement.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const name = document.getElementById('contact-name').value;
+                    const email = document.getElementById('contact-email').value;
+                    const subject = document.getElementById('contact-subject').value;
+                    const message = document.getElementById('contact-message').value;
+
+                    const templateParams = {
+                        to_email: 'garesplayzz12@gmail.com',
+                        from_name: name,
+                        from_email: email,
+                        subject: `URC Contact: ${subject}`,
+                        message_html: `
+                    Contact Message from ${name}
+                    Email: ${email}
+                    Subject: ${subject}
+                    Message: ${message}
+                `
+                    };
+
+                    emailjs.send('default_service', 'template_xz90dmn', templateParams)
+                        .then(function (response) {
+                            console.log('SUCCESS!', response.status, response.text);
+                            modal.classList.add('active');
+                            contactFormElement.reset();
+                        }, function (error) {
+                            console.log('FAILED...', error);
+                            alert('There was an error sending your message. Please try again later.');
+                        });
+                });
+            }
+
+            document.querySelectorAll('a').forEach(link => {
+                if (link.href.includes('#') || !link.href.includes(window.location.origin)) return;
+
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const href = link.href;
+
+                    pageTransition.classList.add('active');
+
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 500);
+                });
+            });
+
+            setTimeout(() => {
+                animateOnScroll();
+            }, 500);
+    </script>
+</body>
+</html>

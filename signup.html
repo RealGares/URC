@@ -1,0 +1,1364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <title>URC - Join The Grid</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #ff0000;
+            --secondary: #1e1e1e;
+            --accent: #ffd700;
+            --text: #ffffff;
+            --background: #121212;
+            --card-bg: #1e1e1e;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes gradientBg {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 1rem 5%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin: 0 1rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .cta-btn {
+            background: linear-gradient(90deg, var(--primary), #ff4d4d);
+            color: var(--text);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text);
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        /* Page Header */
+        .page-header {
+            padding-top: 120px;
+            padding-bottom: 50px;
+            text-align: center;
+            background: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.9)), url('assets/images/background_2.jpg') no-repeat center center/cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #ccc;
+            animation: fadeIn 1s ease forwards 0.3s;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Membership Benefits Section */
+        .benefits-section {
+            padding: 4rem 0;
+            background-color: var(--card-bg);
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+        }
+
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .benefit-card {
+            background-color: var(--background);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .benefit-card.animated {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .benefit-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .benefit-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .benefit-desc {
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        /* Signup Section */
+        .signup-section {
+            padding: 4rem 0;
+            background-color: var(--background);
+        }
+
+        .signup-container {
+            display: flex;
+            gap: 4rem;
+            align-items: flex-start;
+        }
+
+        .signup-info {
+            flex: 1;
+            opacity: 0;
+            animation: slideInLeft 1s ease forwards;
+        }
+
+        .signup-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .signup-info p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        .requirements-list {
+            margin-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .requirements-list li {
+            margin-bottom: 0.8rem;
+            color: #ddd;
+        }
+
+        .info-box {
+            background-color: rgba(255, 215, 0, 0.1);
+            border-left: 3px solid var(--accent);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .info-box h4 {
+            color: var(--accent);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .info-box p {
+            margin-bottom: 0.5rem;
+        }
+
+        .signup-form-container {
+            flex: 1;
+            background-color: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            animation: slideInRight 1s ease forwards;
+        }
+
+        .signup-form-container h3 {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--accent);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 5px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1em;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.8rem;
+            margin-top: 0.8rem;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            padding: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(90deg, var(--primary), #ff4d4d);
+            color: var(--text);
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            padding: 4rem 0;
+            background-color: var(--card-bg);
+        }
+
+        .accordion {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .accordion-item {
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: var(--background);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .accordion-header {
+            padding: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background-color: rgba(255, 255, 255, 0.07);
+        }
+
+        .accordion-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .accordion-icon {
+            width: 20px;
+            height: 20px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .accordion-icon::before,
+        .accordion-icon::after {
+            content: '';
+            position: absolute;
+            background-color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .accordion-icon::before {
+            width: 100%;
+            height: 2px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .accordion-icon::after {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .accordion-item.active .accordion-icon::after {
+            transform: translateX(-50%) rotate(90deg);
+            opacity: 0;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            padding: 0 1.5rem;
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 300px;
+            padding: 1.5rem;
+        }
+
+        .accordion-text {
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0a0a0a;
+            padding: 3rem 5%;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-logo h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-logo p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            margin-left: 5px;
+        }
+
+        .footer-newsletter {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .footer-newsletter h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .footer-newsletter p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+        }
+
+        .newsletter-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: var(--primary);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            background-color: #ff2d2d;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            color: #777;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            transform: scale(0.7);
+            transition: all 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            margin-bottom: 1.5rem;
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        .modal-footer {
+            text-align: right;
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 1024px) {
+            .signup-container {
+                flex-direction: column;
+            }
+
+            .signup-info,
+            .signup-form-container {
+                width: 100%;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                right: -100%;
+                top: 80px;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--secondary);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.5s ease;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links ul {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links li {
+                margin: 1.5rem 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hamburger.active div:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 6px);
+            }
+
+            .hamburger.active div:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active div:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -6px);
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .page-subtitle {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        @media screen and (max-width: 576px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .benefit-card {
+                padding: 1.5rem;
+            }
+
+            .signup-form-container {
+                padding: 1.5rem;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--secondary);
+            z-index: 9999;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .page-transition.active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Transition -->
+    <div class="page-transition"></div>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <img src="assets/images/logo.png" alt="URC Logo">
+            <h1>URC</h1>
+        </div>
+        <div class="nav-links">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="drivers.html">Drivers</a></li>
+                <li><a href="calendar.html">Calendar</a></li>
+                <li><a href="standings.html">Standings</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="rules.html">Rules</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+        <a href="signup.html" class="cta-btn active">Join Now</a>
+        <div class="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1 class="page-title">JOIN THE ULTIMATE RACING CHAMPIONSHIP</h1>
+        <p class="page-subtitle">Start your journey to become the next virtual F1 champion</p>
+    </header>
+
+    <!-- Membership Benefits Section -->
+
+    <!-- Signup Section -->
+    <section class="signup-section">
+        <div class="container">
+            <h2 class="section-title">Registration Form</h2>
+            <div class="signup-container">
+                <div class="signup-info">
+                    <h3>How to Join</h3>
+                    <p>Joining the Ultimate Racing Championship is a straightforward process. Complete the registration form,
+                        and our team will review your application. Once approved, you'll be placed in the appropriate
+                        division based on your experience level.</p>
+
+                    <h3>Requirements</h3>
+                    <p>To ensure a smooth racing experience for everyone, we have the following basic requirements:</p>
+                    <ul class="requirements-list">
+                        <li>A stable internet connection (minimum 10 Mbps download)</li>
+                        <li>Discord account for communication</li>
+                        <li>Ability to attend race sessions on Mondays at 6:30 PM AEST</li>
+                        <li>Commitment to fair play and sportsmanship</li>
+                        <li>Must be at least 15 years old</li>
+                    </ul>
+
+                    <div class="info-box">
+                        <h4>Important Information</h4>
+                        <p>Your application will be reviewed within 48 hours. If accepted, you'll receive an invitation
+                            to our Discord server with further instructions.</p>
+                    </div>
+                </div>
+
+                <div class="signup-form-container">
+                    <h3>Driver Registration</h3>
+                    <form id="registration-form" action="https://formspree.io/f/xyzwodvz" method="POST">
+                        <input type="hidden" name="_format" value="plain">
+                        <input type="hidden" name="_subject" value="URC Sign-up from {{name}}">
+                        <input type="hidden" name="_body"
+                            value="Sign-up from {{name}}:%0A* Discord Username: {{discord}}%0A* Gaming Platform: {{platform}}%0A* Racing Experience: {{experience}}%0A* Assists: {{assists}}%0A* Why they want to join: {{message}}">
+                        <input type="hidden" name="_next" value="thank-you.html">
+
+                        <div class="form-group">
+                            <label for="name" class="form-label">Full Name</label>
+                            <input type="text" id="name" name="name" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" id="email" name="email" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="discord" class="form-label">Discord Username</label>
+                            <input type="text" id="discord" name="discord" class="form-input" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="platform" class="form-label">Gaming Platform</label>
+                            <select id="platform" name="platform" class="form-input form-select" required>
+                                <option value="">Select Platform</option>
+                                <option value="PC-steam">PC (Steam)</option>
+                                <option value="PC-ea">PC (EA Play)</option>
+                                <option value="PlayStation">PlayStation</option>
+                                <option value="Xbox">Xbox</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="experience" class="form-label">Racing Experience</label>
+                            <select id="experience" name="experience" class="form-input form-select" required>
+                                <option value="">Select Experience Level</option>
+                                <option value="Beginner">Beginner (0-6 months)</option>
+                                <option value="Intermediate">Intermediate (6-18 months)</option>
+                                <option value="Experienced">Experienced (18+ months)</option>
+                                <option value="Professional">Professional</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Assists</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="assist-racing-line" name="assists" value="racing-line">
+                                    <label for="assist-racing-line">Racing Line</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="assist-abs" name="assists" value="abs">
+                                    <label for="assist-abs">ABS</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="assist-traction-medium" name="assists" value="traction-medium">
+                                    <label for="assist-traction-medium">Medium Traction</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="assist-traction-full" name="assists" value="traction-full">
+                                    <label for="assist-traction-full">Full Traction</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="assist-gearbox" name="assists" value="gearbox">
+                                    <label for="assist-gearbox">Automatic Gearbox</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="assist-none" name="assists" value="none">
+                                    <label for="assist-none">No Assists</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message" class="form-label">Why do you want to join URC?</label>
+                            <textarea id="message" name="message" class="form-input form-textarea" required></textarea>
+                        </div>
+
+                        <button type="submit" class="submit-btn">Submit Application</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="container">
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">How does the division placement work?</div>
+                        <div class="accordion-icon"></div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-text">
+                            New drivers complete a brief assessment consisting of a hot lap and a short race simulation.
+                            Based on your performance and experience, you'll be placed in one of three divisions: Pro,
+                            Championship, or Challenge. This ensures competitive and balanced racing within each skill
+                            level.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">What if I can't attend every race?</div>
+                        <div class="accordion-icon"></div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-text">
+                            While regular attendance is encouraged, we understand that life happens. Drivers must attend
+                            at least 75% of races to remain in good standing. If you know you'll miss a race, simply
+                            notify your team principal or the race stewards in advance.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">Are there any hardware requirements?</div>
+                        <div class="accordion-icon"></div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-text">
+                            You need hardware capable of running the F1 25 game at stable framerates. While a wheel
+                            setup is recommended for optimal control, many successful drivers use gamepads.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">How are teams formed?</div>
+                        <div class="accordion-icon"></div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-text">
+                            New drivers can either join existing teams with vacancies or form new teams with other
+                            drivers. Each team consists of 2 primary drivers and can have a reserve driver.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">Is there a registration fee?</div>
+                        <div class="accordion-icon"></div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-text">
+                            No! Registration is completely free for everyone.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header">
+                        <div class="accordion-title">What happens if I break the rules?</div>
+                        <div class="accordion-icon"></div>
+                    </div>
+                    <div class="accordion-content">
+                        <div class="accordion-text">
+                            We have a detailed rulebook and penalty system. First-time minor infractions typically
+                            result in warnings or small time penalties. Repeated violations may lead to grid penalties
+                            for future races. Serious misconduct such as intentional wrecking or abusive behavior can
+                            result in race bans or removal from the league.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Modal -->
+    <div class="modal" id="success-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Application Submitted!</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Thank you for your interest in joining the Ultimate Racing Championship! Your application has been received
+                    and our team will review it shortly.</p>
+                <p>You should receive a confirmation email within the next 24 hours with further instructions. If you
+                    have any questions in the meantime, please contact us at <strong>info@urcleague.com</strong>.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="cta-btn modal-close-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>URC</h2>
+                <p>Ultimate Racing Championship - The premier F1 25 racing competition for virtual drivers.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="drivers.html">Drivers</a></li>
+                    <li><a href="calendar.html">Calendar</a></li>
+                    <li><a href="standings.html">Standings</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="rules.html">Rules & Regulations</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="signup.html">Join The League</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-newsletter">
+                <h3>Subscribe to Our Newsletter</h3>
+                <p>Stay updated with the latest news, race results, and special announcements.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" class="newsletter-input" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Ultimate Racing Championship (URC). All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        (function() {
+            emailjs.init({
+                publicKey: "q2-oXb6RX6KjNz91t",
+            });
+        })();
+        // DOM Elements
+        const nav = document.querySelector('nav');
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        const benefitCards = document.querySelectorAll('.benefit-card');
+        const accordionItems = document.querySelectorAll('.accordion-item');
+        const registrationForm = document.getElementById('registration-form');
+        const modal = document.getElementById('success-modal');
+        const modalCloseBtn = document.querySelectorAll('.modal-close, .modal-close-btn');
+        const pageTransition = document.querySelector('.page-transition');
+
+        // Mobile Navigation
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Scroll event for navbar and animations
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+
+            // Animate benefit cards on scroll
+            benefitCards.forEach((card, index) => {
+                const cardTop = card.getBoundingClientRect().top;
+                if (cardTop < window.innerHeight - 100) {
+                    card.classList.add('animated');
+                    card.style.animationDelay = `${index * 0.1}s`;
+                }
+            });
+        });
+
+        // Accordion functionality
+        accordionItems.forEach(item => {
+            const header = item.querySelector('.accordion-header');
+            header.addEventListener('click', () => {
+                item.classList.toggle('active');
+            });
+        });
+
+        // Form submission and modal
+        if (registrationForm) {
+                registrationForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const name1 = document.getElementById('name').value
+                    const email = document.getElementById('email').value;
+                    const discord = document.getElementById('discord').value;
+                    const platform = document.getElementById('platform').value;
+                    const experience = document.getElementById('experience').value;
+
+                    const assistsCheckboxes = document.querySelectorAll('input[name="assists"]:checked');
+                    const assists = Array.from(assistsCheckboxes).map(checkbox => checkbox.value).join(', ');
+
+                    const message = document.getElementById('message').value;
+
+                    const templateParams = {
+                        name: name1,
+                        email: 'garesplayzz12@gmail.com',
+                        discord_username: discord,
+                        gaming_platform: platform,
+                        racing_experience: experience,
+                        assists: assists,
+                        join_reason: message,
+                        subject: `URC Sign-up from ${name}`
+                    };
+
+                    emailjs.send('service_ytz5nzk', 'template_xz90dmn', templateParams)
+                        .then(function (response) {
+                            console.log('SUCCESS!', response.status, response.text);
+                            modal.classList.add('active');
+                            registrationForm.reset();
+                        }, function (error) {
+                            console.log('FAILED...', error);
+                            alert('There was an error submitting your application. Please try again soon.');
+                        });
+                });
+            }
+
+        // Modal close buttons
+        modalCloseBtn.forEach(btn => {
+            btn.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+        });
+
+        // Call animations on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                // Trigger scroll to start animations
+                window.dispatchEvent(new Event('scroll'));
+            }, 500);
+        });
+
+        // Check for assist-none checkbox
+        const noAssistsCheckbox = document.getElementById('assist-none');
+        const otherAssistsCheckboxes = document.querySelectorAll('input[name="assists"]:not(#assist-none)');
+
+        if (noAssistsCheckbox) {
+            // When no-assists is checked, uncheck and disable others
+            noAssistsCheckbox.addEventListener('change', function () {
+                if (this.checked) {
+                    otherAssistsCheckboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                        checkbox.disabled = true;
+                    });
+                } else {
+                    otherAssistsCheckboxes.forEach(checkbox => {
+                        checkbox.disabled = false;
+                    });
+                }
+            });
+
+            // When any other assist is checked, uncheck no-assists
+            otherAssistsCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function () {
+                    if (this.checked) {
+                        noAssistsCheckbox.checked = false;
+                    }
+                });
+            });
+        }
+
+        document.querySelectorAll('a').forEach(link => {
+                if (link.href.includes('#') || !link.href.includes(window.location.origin)) return;
+
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const href = link.href;
+
+                    pageTransition.classList.add('active');
+
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 500);
+                });
+            });
+    </script>
+</body>
+
+</html>

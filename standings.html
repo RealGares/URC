@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URC - Standings</title>
+    <style>
+        :root {
+            --primary: #ff0000;
+            --secondary: #1e1e1e;
+            --accent: #ffd700;
+            --text: #ffffff;
+            --background: #121212;
+            --card-bg: #1e1e1e;
+
+            --team-red: #e10600;
+            --team-blue: #0600e1;
+            --team-green: #006f62;
+            --team-orange: #ff8700;
+            --team-yellow: #ffd700;
+            --team-purple: #9400d3;
+            --team-pink: #ff1493;
+            --team-teal: #008080;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes gradientBg {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 1rem 5%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--secondary);
+            z-index: 9999;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .page-transition.active {
+            transform: translateY(0);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientBg 3s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            animation: none;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin: 0 1rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .cta-btn {
+            background: linear-gradient(90deg, var(--primary), #ff4d4d);
+            color: var(--text);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text);
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .page-header {
+            padding-top: 120px;
+            padding-bottom: 50px;
+            text-align: center;
+            background: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.9)), url('/api/placeholder/1920/300') no-repeat center center/cover;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #ccc;
+            animation: fadeIn 1s ease forwards 0.3s;
+        }
+
+        .season-select {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            gap: 1rem;
+        }
+
+        .season-btn {
+            padding: 0.7rem 1.5rem;
+            background-color: var(--card-bg);
+            color: var(--text);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .season-btn.active {
+            background: linear-gradient(90deg, var(--primary), #ff4d4d);
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .season-btn:hover:not(.active) {
+            background-color: #333;
+        }
+
+        .standings-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: transparent;
+            color: var(--text);
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            width: 100%;
+        }
+
+        .standings-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        .standings-table-container {
+            overflow-x: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .standings-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            background-color: var(--card-bg);
+        }
+
+        .standings-table th, 
+        .standings-table td {
+            padding: 1rem 0.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .standings-table th {
+            background-color: #0a0a0a;
+            position: sticky;
+            top: 0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .standings-table tr:hover:not(.table-header) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .position {
+            font-weight: 700;
+            font-size: 1.1rem;
+            width: 40px;
+        }
+
+        .position-change {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .position-change.up {
+            color: #2ecc71;
+        }
+
+        .position-change.down {
+            color: #e74c3c;
+        }
+
+        .driver {
+            display: flex;
+            align-items: center;
+            text-align: left;
+            min-width: 200px;
+        }
+
+        .driver-photo {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid var(--team-red);
+            overflow: hidden;
+        }
+
+        .driver-photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .driver-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .driver-name {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .driver-team {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .team-color {
+            width: 4px;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        .team-red {
+            background-color: var(--team-red);
+        }
+
+        .team-blue {
+            background-color: var(--team-blue);
+        }
+
+        .team-green {
+            background-color: var(--team-green);
+        }
+
+        .team-orange {
+            background-color: var(--team-orange);
+        }
+
+        .team-yellow {
+            background-color: var(--team-yellow);
+        }
+
+        .team-purple {
+            background-color: var(--team-purple);
+        }
+
+        .team-pink {
+            background-color: var(--team-pink);
+        }
+
+        .team-teal {
+            background-color: var(--team-teal);
+        }
+
+        .team-white {
+            background-color: white;
+        }
+
+        .points {
+            font-weight: 700;
+            font-size: 1.2rem;
+            width: 80px;
+        }
+
+        .points-details {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .race-result {
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin: 0 2px;
+        }
+
+        .position-1 {
+            background-color: #ffd700;
+            color: #000;
+        }
+
+        .position-2 {
+            background-color: #c0c0c0;
+            color: #000;
+        }
+
+        .position-3 {
+            background-color: #cd7f32;
+            color: #000;
+        }
+
+        .position-points {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .position-dnf {
+            background-color: rgba(255, 0, 0, 0.3);
+        }
+
+        .position-dns {
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #777;
+        }
+
+        .flags-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .flag {
+            width: 30px;
+            height: 20px;
+            border-radius: 3px;
+            margin: 0 2px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+            padding: 1.5rem;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .legend-text {
+            font-size: 0.9rem;
+        }
+
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-title {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .stat-list {
+            list-style: none;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+
+        .stat-name {
+            display: flex;
+            align-items: center;
+        }
+
+        .stat-name img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .stat-value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        footer {
+            background-color: #0a0a0a;
+            padding: 3rem 5%;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-logo h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-logo p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            margin-left: 5px;
+        }
+
+        .footer-newsletter {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .footer-newsletter h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .footer-newsletter p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+        }
+
+        .newsletter-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: var(--primary);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            background-color: #ff2d2d;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            color: #777;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        @media screen and (max-width: 1024px) {
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .statistics {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                right: -100%;
+                top: 80px;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--secondary);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.5s ease;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links ul {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links li {
+                margin: 1.5rem 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hamburger.active div:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 6px);
+            }
+
+            .hamburger.active div:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active div:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -6px);
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .page-subtitle {
+                font-size: 1rem;
+            }
+
+            .standings-tabs {
+                overflow-x: auto;
+                padding-bottom: 5px;
+            }
+
+            .tab-btn {
+                padding: 0.8rem 1rem;
+                font-size: 0.9rem;
+                white-space: nowrap;
+            }
+        }
+
+        @media screen and (max-width: 576px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .season-select {
+                flex-wrap: wrap;
+            }
+
+            .driver {
+                min-width: 150px;
+            }
+
+            .driver-name {
+                font-size: 0.9rem;
+            }
+        }
+
+        .scrollTop {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background-color: var(--primary);
+            color: var(--text);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .scrollTop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .scrollTop:hover {
+            background-color: #ff2d2d;
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-transition"></div>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <img src="assets/images/logo.png" alt="URC Logo">
+            <h1>URC</h1>
+        </div>
+        <div class="nav-links">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="drivers.html">Drivers</a></li>
+                <li><a href="calendar.html">Calendar</a></li>
+                <li><a href="standings.html" class="active">Standings</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="rules.html">Rules</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+        <a href="signup.html" class="cta-btn">Join Now</a>
+        <div class="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </nav>
+    
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1 class="page-title">CHAMPIONSHIP STANDINGS</h1>
+        <p class="page-subtitle">Follow the battle for the URC Championship title with live updated standings after each
+            race</p>
+    </header>
+    
+    <!-- Season Select -->
+    <div class="season-select">
+        <button class="season-btn active">Season 2025</button>
+        <button class="season-btn">All-Time Stats</button>
+    </div>
+    
+    <!-- Standings Tabs -->
+    <div class="standings-tabs">
+        <button class="tab-btn active">Drivers</button>
+        <button class="tab-btn">Teams</button>
+    </div>
+    
+    <!-- Circuit Flags -->
+    <div class="flags-container">
+        <img src="assets/images/australia.webp" alt="Australia" class="flag" title="Australian Grand Prix">
+        <img src="assets/images/monaco.png" alt="Monaco" class="flag" title="Monaco Grand Prix">
+        <img src="assets/images/uk.webp" alt="UK" class="flag" title="British Grand Prix">
+        <img src="assets/images/italy.png" alt="Italy" class="flag" title="Italian Grand Prix">
+        <img src="assets/images/spain.png" alt="Spain" class="flag" title="Spanish Grand Prix">
+        <img src="assets/images/belgium.png" alt="Belgium" class="flag" title="Belgian Grand Prix">
+        <img src="assets/images/singapore.webp" alt="Singapore" class="flag" title="Singapore Grand Prix">
+        <img src="assets/images/japan.png" alt="Japan" class="flag" title="Japanese Grand Prix">
+        <img src="assets/images/usa.webp" alt="USA" class="flag" title="United States Grand Prix">
+        <img src="assets/images/brazil.png" alt="Brazil" class="flag" title="Brazilian Grand Prix">
+        <img src="assets/images/uae.svg" alt="Abu Dhabi" class="flag" title="Abu Dhabi Grand Prix">
+        <img src="assets/images/mexico.png" alt="Mexico" class="flag" title="Mexican Grand Prix">
+    </div>
+    
+    <!-- Standings Container -->
+    <div class="standings-container">
+        <!-- Standings Table -->
+        <div class="standings-table-container">
+            <table class="standings-table">
+                <thead>
+                    <tr class="table-header">
+                        <th>Pos</th>
+                        <th>Driver</th>
+                        <th>Pts</th>
+                        <th>AUS</th>
+                        <th>MON</th>
+                        <th>GBR</th>
+                        <th>ITA</th>
+                        <th>ESP</th>
+                        <th>BEL</th>
+                        <th>SIN</th>
+                        <th>JPN</th>
+                        <th>USA</th>
+                        <th>BRA</th>
+                        <th>ABU</th>
+                        <th>MEX</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="position">1<div class="position-change">-</div>
+                        </td>
+                        <td>
+                            <div class="driver">
+                                <div class="team-color team-blue"></div>
+                                <div class="driver-photo">
+                                    <img src="assets/images/driver_1.png" alt="Jonno">
+                                </div>
+                                <div class="driver-info">
+                                    <div class="driver-name">Jonno</div>
+                                    <div class="driver-team">Red Bull</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="points">0<div class="points-details">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="position">2<div class="position-change">-</div>
+                        </td>
+                        <td>
+                            <div class="driver">
+                                <div class="team-color team-red"></div>
+                                <div class="driver-photo">
+                                    <img src="assets/images/driver_2.png" alt="Meowsy">
+                                </div>
+                                <div class="driver-info">
+                                    <div class="driver-name">Meowsy</div>
+                                    <div class="driver-team">Ferrari</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="points">0<div class="points-details">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="position">3<div class="position-change">-</div>
+                        </td>
+                        <td>
+                            <div class="driver">
+                                <div class="team-color team-blue"></div>
+                                <div class="driver-photo">
+                                    <img src="assets/images/driver_3.png" alt="Klunky">
+                                </div>
+                                <div class="driver-info">
+                                    <div class="driver-name">Klunky</div>
+                                    <div class="driver-team">Red Bull</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="points">0<div class="points-details">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="position">4<div class="position-change">-</div>
+                        </td>
+                        <td>
+                            <div class="driver">
+                                <div class="team-color team-orange"></div>
+                                <div class="driver-photo">
+                                    <img src="assets/images/driver_4.png" alt="Combined">
+                                </div>
+                                <div class="driver-info">
+                                    <div class="driver-name">Combined</div>
+                                    <div class="driver-team">McLaren</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="points">0<div class="points-details">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="position">5<div class="position-change">-</div>
+                        </td>
+                        <td>
+                            <div class="driver">
+                                <div class="team-color team-orange"></div>
+                                <div class="driver-photo">
+                                    <img src="assets/images/driver_5.png" alt="Vipah">
+                                </div>
+                                <div class="driver-info">
+                                    <div class="driver-name">Vipah</div>
+                                    <div class="driver-team">McLaren</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="points">0<div class="points-details">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="position">6<div class="position-change">-</div>
+                        </td>
+                        <td>
+                            <div class="driver">
+                                <div class="team-color team-green"></div>
+                                <div class="driver-photo">
+                                    <img src="assets/images/driver_6.png" alt="Bigtmac">
+                                </div>
+                                <div class="driver-info">
+                                    <div class="driver-name">Bigtmac</div>
+                                    <div class="driver-team">Aston Martin</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="points">0<div class="points-details">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="position">7<div class="position-change">-</div>
+                        </td>
+                        <td>
+                            <div class="driver">
+                                <div class="team-color team-pink"></div>
+                                <div class="driver-photo">
+                                    <img src="assets/images/driver_7.png" alt="gridjokes">
+                                </div>
+                                <div class="driver-info">
+                                    <div class="driver-name">gridjokes</div>
+                                    <div class="driver-team">Alpine</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="points">0<div class="points-details">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="position">8<div class="position-change">-</div>
+                        </td>
+                        <td>
+                            <div class="driver">
+                                <div class="team-color team-white"></div>
+                                <div class="driver-photo">
+                                    <img src="assets/images/driver_8.png" alt="Sammy">
+                                </div>
+                                <div class="driver-info">
+                                    <div class="driver-name">Sammy</div>
+                                    <div class="driver-team">Haas</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="points">0<div class="points-details">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="position">9<div class="position-change">-</div>
+                        </td>
+                        <td>
+                            <div class="driver">
+                                <div class="team-color team-red"></div>
+                                <div class="driver-photo">
+                                    <img src="assets/images/driver_9.png" alt="Newell">
+                                </div>
+                                <div class="driver-info">
+                                    <div class="driver-name">Newell</div>
+                                    <div class="driver-team">Ferrari</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="points">0<div class="points-details">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                    <tr>
+                        <td class="position">10<div class="position-change">-</div>
+                        </td>
+                        <td>
+                            <div class="driver">
+                                <div class="team-color team-pink"></div>
+                                <div class="driver-photo">
+                                    <img src="assets/images/driver_10.png" alt="zoolander">
+                                </div>
+                                <div class="driver-info">
+                                    <div class="driver-name">zoolander</div>
+                                    <div class="driver-team">Alpine</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="points">0<div class="points-details">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>
+                            <div class="race-result">-</div>
+                        </td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    
+        <!-- Legend -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color position-1"></div>
+                <div class="legend-text">1st Place</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color position-2"></div>
+                <div class="legend-text">2nd Place</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color position-3"></div>
+                <div class="legend-text">3rd Place</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color position-points"></div>
+                <div class="legend-text">Points Finish</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color position-dnf"></div>
+                <div class="legend-text">DNF</div>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color position-dns"></div>
+                <div class="legend-text">DNS</div>
+            </div>
+        </div>
+    
+        <!-- Statistics -->
+        <div class="statistics">
+            <div class="stat-card">
+                <h3 class="stat-title">Most Race Wins</h3>
+                <ul class="stat-list">
+                    <li class="stat-item">
+                        <div class="stat-name">
+                            <img src="assets/images/driver_1.png" alt="Jonno">
+                            Jonno
+                        </div>
+                        <div class="stat-value">0</div>
+                    </li>
+                    <li class="stat-item">
+                        <div class="stat-name">
+                            <img src="assets/images/driver_2.png" alt="Meowsy">
+                            Meowsy
+                        </div>
+                        <div class="stat-value">0</div>
+                    </li>
+                    <li class="stat-item">
+                        <div class="stat-name">
+                            <img src="assets/images/driver_3.png" alt="Klunky">
+                            Klunky
+                        </div>
+                        <div class="stat-value">0</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="stat-card">
+                <h3 class="stat-title">Most Podiums</h3>
+                <ul class="stat-list">
+                    <li class="stat-item">
+                        <div class="stat-name">
+                            <img src="assets/images/driver_1.png" alt="Jonno">
+                            Jonno
+                        </div>
+                        <div class="stat-value">0</div>
+                    </li>
+                    <li class="stat-item">
+                        <div class="stat-name">
+                            <img src="assets/images/driver_2.png" alt="Meowsy">
+                            Meowsy
+                        </div>
+                        <div class="stat-value">0</div>
+                    </li>
+                    <li class="stat-item">
+                        <div class="stat-name">
+                            <img src="assets/images/driver_3.png" alt="Klunky">
+                            Klunky
+                        </div>
+                        <div class="stat-value">0</div>
+                    </li>
+                </ul>
+            </div>
+            <div class="stat-card">
+                <h3 class="stat-title">Fastest Laps</h3>
+                <ul class="stat-list">
+                    <li class="stat-item">
+                        <div class="stat-name">
+                            <img src="assets/images/driver_1.png" alt="Jonno">
+                            Jonno
+                        </div>
+                        <div class="stat-value">0</div>
+                    </li>
+                    <li class="stat-item">
+                        <div class="stat-name">
+                            <img src="assets/images/driver_2.png" alt="Meowsy">
+                            Meowsy
+                        </div>
+                        <div class="stat-value">0</div>
+                    </li>
+                    <li class="stat-item">
+                        <div class="stat-name">
+                            <img src="assets/images/driver_3.png" alt="Klunky">
+                            Klunky
+                        </div>
+                        <div class="stat-value">0</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>URC</h2>
+                <p>Ultimate Racing League - The premier F1 24/25 racing competition for virtual drivers.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="drivers.html">Drivers</a></li>
+                    <li><a href="calendar.html">Calendar</a></li>
+                    <li><a href="standings.html">Standings</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="rules.html">Rules & Regulations</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="signup.html">Join The League</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-newsletter">
+                <h3>Subscribe to Our Newsletter</h3>
+                <p>Stay updated with the latest news, race results, and special announcements.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" class="newsletter-input" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Ultimate Racing League (URC). All Rights Reserved.</p>
+        </div>
+    </footer>
+    
+    <!-- Scroll to Top Button -->
+    <div class="scrollTop">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="18 15 12 9 6 15"></polyline>
+        </svg>
+    </div>
+    <script>
+        // DOM Elements
+        const nav = document.querySelector('nav');
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        const scrollTopBtn = document.querySelector('.scrollTop');
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const seasonBtns = document.querySelectorAll('.season-btn');
+        const pageTransition = document.querySelector('.page-transition');
+
+        // Mobile Navigation
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Scroll event for navbar
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+
+            // Show/hide scroll to top button
+            if (window.scrollY > 500) {
+                scrollTopBtn.classList.add('active');
+            } else {
+                scrollTopBtn.classList.remove('active');
+            }
+        });
+
+        // Scroll to top button
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Tab switching
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(tab => tab.classList.remove('active'));
+                btn.classList.add('active');
+                // In a real implementation, this would load different data
+            });
+        });
+
+        // Season switching
+        seasonBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                seasonBtns.forEach(season => season.classList.remove('active'));
+                btn.classList.add('active');
+                // In a real implementation, this would load different data
+            });
+        });
+
+        document.querySelectorAll('a').forEach(link => {
+                if (link.href.includes('#') || !link.href.includes(window.location.origin)) return;
+
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const href = link.href;
+
+                    pageTransition.classList.add('active');
+
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 500);
+                });
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URC - Rules & Regulations</title>
+    <style>
+        :root {
+            --primary: #ff0000;
+            --secondary: #1e1e1e;
+            --accent: #ffd700;
+            --text: #ffffff;
+            --background: #121212;
+            --card-bg: #1e1e1e;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 1rem 5%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin: 0 1rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .cta-btn {
+            background: linear-gradient(90deg, var(--primary), #ff4d4d);
+            color: var(--text);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text);
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        /* Page Header */
+        .page-header {
+            padding-top: 120px;
+            padding-bottom: 50px;
+            text-align: center;
+            background: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.9)), url('/api/placeholder/1920/300') no-repeat center center/cover;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #ccc;
+            animation: fadeIn 1s ease forwards 0.3s;
+        }
+
+        /* Rules Container */
+        .rules-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            display: flex;
+            gap: 2rem;
+        }
+
+        /* Rules Navigation */
+        .rules-nav {
+            width: 250px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            animation: slideInLeft 1s ease forwards;
+        }
+
+        .rules-nav h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .rules-nav ul {
+            list-style: none;
+        }
+
+        .rules-nav li {
+            margin-bottom: 0.8rem;
+        }
+
+        .rules-nav a {
+            color: var(--text);
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .rules-nav a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--accent);
+        }
+
+        .rules-nav a.active {
+            background-color: rgba(255, 0, 0, 0.2);
+            color: var(--accent);
+            border-left: 3px solid var(--primary);
+        }
+
+        /* Rules Content */
+        .rules-content {
+            flex: 1;
+            animation: slideInRight 1s ease forwards;
+        }
+
+        .rule-section {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .rule-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--primary);
+        }
+
+        .rule-subsection {
+            margin-bottom: 1.5rem;
+        }
+
+        .rule-subsection:last-child {
+            margin-bottom: 0;
+        }
+
+        .subsection-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .rule-content {
+            line-height: 1.6;
+            color: #ddd;
+        }
+
+        .rule-content p {
+            margin-bottom: 1rem;
+        }
+
+        .rule-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .rule-content ul,
+        .rule-content ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .rule-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .rule-content strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .rule-content .highlight {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .rule-content .note {
+            background-color: rgba(255, 215, 0, 0.1);
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            margin: 1rem 0;
+            font-style: italic;
+        }
+
+        .rule-content .warning {
+            background-color: rgba(255, 0, 0, 0.1);
+            border-left: 3px solid var(--primary);
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0a0a0a;
+            padding: 3rem 5%;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-logo h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-logo p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            margin-left: 5px;
+        }
+
+        .footer-newsletter {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .footer-newsletter h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .footer-newsletter p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+        }
+
+        .newsletter-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: var(--primary);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            background-color: #ff2d2d;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            color: #777;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--secondary);
+            z-index: 9999;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .page-transition.active {
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 1024px) {
+            .rules-container {
+                flex-direction: column;
+            }
+
+            .rules-nav {
+                width: 100%;
+                position: relative;
+                top: 0;
+                margin-bottom: 2rem;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                right: -100%;
+                top: 80px;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--secondary);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.5s ease;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links ul {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links li {
+                margin: 1.5rem 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hamburger.active div:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 6px);
+            }
+
+            .hamburger.active div:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active div:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -6px);
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .page-subtitle {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .subsection-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-transition"></div>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <img src="assets/images/logo.png" alt="URC Logo">
+            <h1>URC</h1>
+        </div>
+        <div class="nav-links">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="drivers.html">Drivers</a></li>
+                <li><a href="calendar.html">Calendar</a></li>
+                <li><a href="standings.html">Standings</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="rules.html" class="active">Rules</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+        <a href="signup.html" class="cta-btn">Join Now</a>
+        <div class="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </nav>
+    
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1 class="page-title">RULES & REGULATIONS</h1>
+        <p class="page-subtitle">The official rulebook for the Ultimate Racing Championship 2025 season</p>
+    </header>
+    
+    <!-- Rules Container -->
+    <div class="rules-container">
+        <!-- Rules Navigation -->
+        <aside class="rules-nav">
+            <h3>Sections</h3>
+            <ul>
+                <li><a href="#general" class="active">General Rules</a></li>
+                <li><a href="#eligibility">Eligibility & Registration</a></li>
+                <li><a href="#format">League Format</a></li>
+                <li><a href="#race-day">Race Day Procedures</a></li>
+                <li><a href="#driving-standards">Driving Standards</a></li>
+                <li><a href="#penalties">Penalties & Appeals</a></li>
+                <li><a href="#scoring">Scoring System</a></li>
+                <li><a href="#technical">Technical Requirements</a></li>
+                <li><a href="#car-setups">Car Setups</a></li>
+                <li><a href="#communication">Communication</a></li>
+            </ul>
+        </aside>
+    
+        <!-- Rules Content -->
+        <div class="rules-content">
+            <!-- General Rules Section -->
+            <section id="general" class="rule-section">
+                <h2 class="section-title">General Rules</h2>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">1.1 Code of Conduct</h3>
+                    <div class="rule-content">
+                        <p>All participants in the Ultimate Racing Championship (URC) are expected to conduct themselves in a
+                            sportsmanlike and professional manner at all times. This includes:</p>
+                        <ul>
+                            <li>Treating all other drivers, officials, and staff with respect</li>
+                            <li>Maintaining a positive attitude during league events</li>
+                            <li>Avoiding abusive or offensive language in all communications</li>
+                            <li>Accepting stewarding decisions with grace</li>
+                            <li>Representing the league in a positive manner on social media</li>
+                        </ul>
+                        <p class="warning">Violation of the code of conduct may result in penalties, ranging from warnings
+                            to removal from the league, at the discretion of league administrators.</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">1.2 League Administration</h3>
+                    <div class="rule-content">
+                        <p>The URC is managed by a team of administrators responsible for organizing events, enforcing
+                            rules, and resolving disputes. The administration team consists of:</p>
+                        <ul>
+                            <li><strong>League Director:</strong> Overall management of the league</li>
+                            <li><strong>Race Director:</strong> Oversight of race day operations</li>
+                            <li><strong>Stewards Panel:</strong> A team of 3 stewards who review incidents and apply
+                                penalties</li>
+                            <li><strong>Community Manager:</strong> Management of communication and social media</li>
+                        </ul>
+                        <p class="note">League administrators' decisions are final, though appeals may be submitted according to the
+                            appeals process in section 6.3.</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">1.3 Rule Changes</h3>
+                    <div class="rule-content">
+                        <p>The league administration reserves the right to modify, update, or clarify these rules at any
+                            time. Any changes will be communicated to all participants via the official Discord server and
+                            website at least 7 days before implementation.</p>
+                        <p>In exceptional circumstances, emergency rule changes may be implemented with immediate effect if
+                            deemed necessary for fair competition.</p>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Eligibility & Registration Section -->
+            <section id="eligibility" class="rule-section">
+                <h2 class="section-title">Eligibility & Registration</h2>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">2.1 Driver Eligibility</h3>
+                    <div class="rule-content">
+                        <p>To be eligible to compete in the URC, drivers must:</p>
+                        <ul>
+                            <li>Be at least 15 years of age at the start of the season</li>
+                            <li>Have a reliable internet connection capable of maintaining stable gameplay</li>
+                            <li>Be able to attend at least 75% of the scheduled race events</li>
+                        </ul>
+                        <p class="note">Exceptions to the age requirement may be granted on a case-by-case basis, subject to
+                            parental consent for drivers under 15.</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">2.2 Registration Process</h3>
+                    <div class="rule-content">
+                        <p>Interested drivers must complete the following steps to register for the league:</p>
+                        <ol>
+                            <li>Submit the registration form on the official URC website</li>
+                            <li>Join the URC Discord server using the invitation link provided after registration</li>
+                            <li>Complete a brief assessment race to determine skill level and division placement</li>
+                            <li>Select a team and car number, subject to availability</li>
+                        </ol>
+                        <p>Registration for each season opens 30 days before the first race and closes 7 days before the
+                            first race, or when all available slots are filled.</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">2.3 Driver Divisions</h3>
+                    <div class="rule-content">
+                        <p>Based on assessment results and previous racing experience, drivers will be placed into one of
+                            three divisions:</p>
+                        <ul>
+                            <li><strong class="highlight">Pro Division:</strong> Highest skill level, most competitive
+                                racing</li>
+                            <li><strong class="highlight">Championship Division:</strong> Intermediate skill level, balanced
+                                competition</li>
+                            <li><strong class="highlight">Challenge Division:</strong> Entry-level racing focused on driver
+                                development</li>
+                        </ul>
+                        <p>Promotions and relegations between divisions may occur at the end of each season based on
+                            performance.</p>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- League Format Section -->
+            <section id="format" class="rule-section">
+                <h2 class="section-title">League Format</h2>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">3.1 Season Structure</h3>
+                    <div class="rule-content">
+                        <p>The URC season consists of:</p>
+                        <ul>
+                            <li>12 regular season races</li>
+                            <li>1 mid-season special event (non-championship)</li>
+                        </ul>
+                        <p>Races are held weekly on Mondays at 6:30 PM AEST, with occasional adjustments for special events
+                            or holidays.</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">3.2 Race Calendar</h3>
+                    <div class="rule-content">
+                        <p>The 2025 season includes the following tracks:</p>
+                        <ol>
+                            <li>Australian Grand Prix - Melbourne</li>
+                            <li>Monaco Grand Prix - Monte Carlo</li>
+                            <li>British Grand Prix - Silverstone</li>
+                            <li>Italian Grand Prix - Monza</li>
+                            <li>Spanish Grand Prix - Barcelona</li>
+                            <li>Belgian Grand Prix - Spa-Francorchamps</li>
+                            <li>Singapore Grand Prix - Marina Bay (Night Race)</li>
+                            <li>Japanese Grand Prix - Suzuka</li>
+                            <li>United States Grand Prix - Circuit of the Americas</li>
+                            <li>Brazilian Grand Prix - Interlagos</li>
+                            <li>Abu Dhabi Grand Prix - Yas Marina</li>
+                            <li>Mexican Grand Prix - Mexico City</li>
+                        </ol>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">3.3 Teams and Championships</h3>
+                    <div class="rule-content">
+                        <p>The URC features both an individual Drivers' Championship and a team-based Constructors'
+                            Championship. Teams consist of:</p>
+                        <ul>
+                            <li>2 primary drivers per team</li>
+                            <li>1 optional reserve driver</li>
+                            <li>1 team principal (may also be a driver)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Race Day Procedures Section -->
+            <section id="race-day" class="rule-section">
+                <h2 class="section-title">Race Day Procedures</h2>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">4.1 Pre-Race Schedule</h3>
+                    <div class="rule-content">
+                        <p>Race day follows a strict schedule:</p>
+                        <ul>
+                            <li><strong>12:00 PM AEST (Friday):</strong> Announcement is made for driver check-in</li>
+                            <li><strong>6:00 PM AEST (Monday):</strong> Mandatory drivers' briefing</li>
+                            <li><strong>6:35 PM AEST (Monday):</strong> Lobby closes and qualifying begins</li>
+                            <li><strong>6:55 PM AEST (Monday) (approx.):</strong> Race start</li>
+                        </ul>
+                        <p class="warning">Drivers must be present for the briefing. Anyone found not attending the briefing
+                        will not have permission to race.</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">4.2 Qualifying Format</h3>
+                    <div class="rule-content">
+                        <p>Qualifying follows an abbreviated format:</p>
+                        <ul>
+                            <li><strong>Q1:</strong> 12-minute session, all drivers participate</li>
+                            <li><strong>Q2:</strong> 10-minute session, top 15 drivers from Q1</li>
+                            <li><strong>Q3:</strong> 8-minute session, top 10 drivers from Q2</li>
+                        </ul>
+                        <p>Drivers must use the same setup in qualifying and race sessions. Parc fermé rules apply once
+                            qualifying begins.</p>
+                        <p class="note">In the event of technical issues, depending on how much time is remaining, a one-shot qualifying session may
+                            be imposed at the league administrator's discretion</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">4.3 Race Settings</h3>
+                    <div class="rule-content">
+                        <p>Standard race settings are as follows:</p>
+                        <ul>
+                            <li><strong>Distance:</strong> 50% race distance</li>
+                            <li><strong>Formation Lap:</strong> Off</li>
+                            <li><strong>Parc Fermé Rules:</strong> On</li>
+                            <li><strong>Collisions:</strong> On</li>
+                            <li><strong>Damage:</strong> Standard</li>
+                            <li><strong>Safety Car:</strong> On</li>
+                            <li><strong>Corner Cutting Stringency:</strong> Strict</li>
+                            <li><strong>Weather:</strong> Dynamic</li>
+                            <li><strong>Time of Day:</strong> Official</li>
+                        </ul>
+                        <p>The Race Director may adjust these settings if circumstances require it, with announcements made
+                            before the session begins.</p>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Driving Standards Section -->
+            <section id="driving-standards" class="rule-section">
+                <h2 class="section-title">Driving Standards</h2>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">5.1 General Racing Etiquette</h3>
+                    <div class="rule-content">
+                        <p>Drivers are expected to adhere to fundamental racing principles:</p>
+                        <ul>
+                            <li>Race hard but fair, with respect for fellow competitors</li>
+                            <li>Leave space for other cars when racing side-by-side</li>
+                            <li>Make only one defensive move on any straight</li>
+                            <li>Avoid erratic braking or direction changes</li>
+                            <li>Take responsibility for safe overtaking and defense</li>
+                            <li>Acknowledge and apologize for mistakes</li>
+                        </ul>
+                        <p>The URC follows a modified version of the FIA International Sporting Code with adaptations for
+                            sim racing.</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">5.2 Corner Entry and Racing Line</h3>
+                    <div class="rule-content">
+                        <p>When approaching corners:</p>
+                        <ul>
+                            <li>The driver on the inside has the right to the apex but must leave space on exit</li>
+                            <li>The driver on the outside has the right to space on corner entry</li>
+                            <li>A car is considered alongside if its front wheels are at least level with the other car's
+                                rear wheels</li>
+                            <li>Once alongside, both drivers share responsibility for avoiding contact</li>
+                        </ul>
+                        <p class="note">The racing line "belongs" to no driver; position on track determines rights and
+                            responsibilities.</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">5.3 Overtaking and Defending</h3>
+                    <div class="rule-content">
+                        <p>When overtaking:</p>
+                        <ul>
+                            <li>The overtaking driver is primarily responsible for executing a clean pass</li>
+                            <li>Dive-bombing, forcing another driver off-track, or pushing them wide on exit is prohibited
+                            </li>
+                            <li>Changing direction under braking is prohibited</li>
+                            <li>Returning to the racing line after defending must be done safely, with space left for other
+                                cars</li>
+                        </ul>
+                        <p>When defending:</p>
+                        <ul>
+                            <li>Only one defensive move is permitted on any straight</li>
+                            <li>Weaving to break slipstream is prohibited</li>
+                            <li>Moving under braking is prohibited</li>
+                            <li>Squeezing other drivers off-track is prohibited</li>
+                        </ul>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">5.4 Track Limits and Corner Cutting</h3>
+                    <div class="rule-content">
+                        <p>Track limits are defined as the white lines bordering the racing surface. Drivers must keep at
+                            least two wheels within these limits at all times.</p>
+                        <p class="warning">Gaining a lasting advantage by leaving the track will result in immediate penalties.</p>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Penalties & Appeals Section -->
+            <section id="penalties" class="rule-section">
+                <h2 class="section-title">Penalties & Appeals</h2>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">6.1 Penalty System</h3>
+                    <div class="rule-content">
+                        <p>Penalties may be applied in the following forms:</p>
+                        <ul>
+                            <li><strong>Warning:</strong> Formal notice of rule violation without immediate penalty</li>
+                            <li><strong>Time Penalty:</strong> 5, 10, or 20 seconds added to race time</li>
+                            <li><strong>Grid Penalty:</strong> Loss of grid positions for the next race</li>
+                            <li><strong>Points Penalty:</strong> Deduction of championship points</li>
+                            <li><strong>Disqualification:</strong> Removal from the race results</li>
+                            <li><strong>Race Ban:</strong> Prohibition from participating in one or more races</li>
+                            <li><strong>Season Ban:</strong> Expulsion from the league for the remainder of the season</li>
+                        </ul>
+                        <p>Penalties may be applied during races by the game's automated system or post-race by the Stewards
+                            Panel.</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">6.2 Incident Reporting</h3>
+                    <div class="rule-content">
+                        <p>To report an incident for steward review:</p>
+                        <ol>
+                            <li>Submit an incident report form within 24 hours of the race</li>
+                            <li>Include lap number, corner, round, and cars involved</li>
+                            <li>Provide video evidence from your perspective <strong>(NO EXCEPTIONS)</strong></li>
+                            <li>Explain the incident and your view of what occurred</li>
+                        </ol>
+                        <p>The Stewards Panel will review all reported incidents and may also review incidents they observe
+                            independently.</p>
+                        <p class="warning">Frivolous or vexatious reports may result in penalties for the reporting driver.
+                        </p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">6.3 Appeals Process</h3>
+                    <div class="rule-content">
+                        <p>Drivers may appeal penalties by:</p>
+                        <ol>
+                            <li>Submitting an appeal form within 24 hours of the penalty notification</li>
+                            <li>Providing a clear explanation of why the penalty should be reconsidered</li>
+                            <li>Including any new evidence not available during the initial review</li>
+                        </ol>
+                        <p>Appeals are reviewed by a different panel of stewards than those who issued the original penalty.
+                            The appeal decision is final and cannot be further appealed.</p>
+                        <p class="note">Appeals found to be made in bad faith or without substantial new evidence may result
+                            in an increased penalty.</p>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Scoring System Section -->
+            <section id="scoring" class="rule-section">
+                <h2 class="section-title">Scoring System</h2>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">7.1 Points Allocation</h3>
+                    <div class="rule-content">
+                        <p>Championship points are awarded as follows:</p>
+                        <ul>
+                            <li>1st place: 25 points</li>
+                            <li>2nd place: 20 points</li>
+                            <li>3rd place: 16 points</li>
+                            <li>4th place: 13 points</li>
+                            <li>5th place: 11 points</li>
+                            <li>6th place: 10 points</li>
+                            <li>7th place: 9 points</li>
+                            <li>8th place: 7 points</li>
+                            <li>9th place: 5 points</li>
+                            <li>10th place: 3 points</li>
+                            <li>11th place: 2 points</li>
+                            <li>12th place: 1 point</li>
+                        </ul>
+                        <p>Additional point awards:</p>
+                        <ul>
+                            <li>Fastest lap: 1 point (must finish in the top 10)</li>
+                            <li>Pole position: 1 point</li>
+                        </ul>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">7.2 Championship Standings</h3>
+                    <div class="rule-content">
+                        <p>The Drivers' Championship is determined by the total points accumulated throughout the season.
+                            The Constructors' Championship is calculated by combining the points of all drivers within each
+                            team.</p>
+                        <p>In the event of a points tie:</p>
+                        <ol>
+                            <li>The driver with more race wins ranks higher</li>
+                            <li>If still tied, the driver with more second places ranks higher</li>
+                            <li>If still tied, the driver with more third places ranks higher</li>
+                            <li>This process continues through all finishing positions</li>
+                            <li>If still tied, the best result earliest in the season determines the ranking</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Technical Requirements Section -->
+            <section id="technical" class="rule-section">
+                <h2 class="section-title">Technical Requirements</h2>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">8.1 Game Version</h3>
+                    <div class="rule-content">
+                        <p>All drivers must use the official F1 25 game for the platform of their choice (PC,
+                            PlayStation, or Xbox). Cross-platform play is enabled for the league.</p>
+                        <p>Drivers must install all game updates prior to the race starting.</p>
+                        <p class="warning">Using an outdated game version may result in inability to join the server or
+                            incompatibility issues.</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">8.2 Hardware Requirements</h3>
+                    <div class="rule-content">
+                        <p>Drivers must have:</p>
+                        <ul>
+                            <li>Stable internet connection (minimum 10 Mbps download, 5 Mbps upload)</li>
+                            <li>Hardware capable of running the game at minimum recommended specifications</li>
+                            <li>Working microphone for communication</li>
+                        </ul>
+                        <p>Any type of controller is permitted (gamepad, wheel, etc.), but drivers are responsible for
+                            ensuring their controls are properly configured before races.</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">8.3 Assist Restrictions</h3>
+                    <div class="rule-content">
+                        <p>Permitted assists vary by division:</p>
+                        <p><strong class="highlight">Pro Division:</strong></p>
+                        <ul>
+                            <li>Racing Line: Corners only</li>
+                            <li>Traction Control: Off</li>
+                            <li>ABS: Off</li>
+                            <li>Gearbox: Manual</li>
+                            <li>ERS Deployment: Manual</li>
+                        </ul>
+                        <p><strong class="highlight">Championship Division:</strong></p>
+                        <ul>
+                            <li>Racing Line: Optional</li>
+                            <li>Traction Control: Medium</li>
+                            <li>ABS: Optional</li>
+                            <li>Gearbox: Manual</li>
+                            <li>ERS Deployment: Optional</li>
+                        </ul>
+                        <p><strong class="highlight">Challenge Division:</strong></p>
+                        <ul>
+                            <li>Racing Line: Optional</li>
+                            <li>Traction Control: Optional</li>
+                            <li>ABS: Optional</li>
+                            <li>Gearbox: Optional</li>
+                            <li>ERS Deployment: Optional</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Car Setups Section -->
+            <section id="car-setups" class="rule-section">
+                <h2 class="section-title">Car Setups</h2>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">9.1 Setup Regulations</h3>
+                    <div class="rule-content">
+                        <p>Custom car setups are permitted in all divisions, with the following rules:</p>
+                        <ul>
+                            <li>Exploiting game bugs or glitches for performance advantages is prohibited</li>
+                            <li>The same setup must be used for qualifying and race sessions (parc fermé)</li>
+                        </ul>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">9.2 Setup Sharing</h3>
+                    <div class="rule-content">
+                        <p>Setup sharing is permitted with the following guidelines:</p>
+                        <ul>
+                            <li>Teams may internally share setups between teammates</li>
+                            <li>Public setup sharing is permitted</li>
+                            <li>The league may provide baseline setups for each track</li>
+                        </ul>
+                        <p class="note">While sharing is allowed, drivers are encouraged to develop setups that match their
+                            individual driving style.</p>
+                    </div>
+                </div>
+            </section>
+    
+            <!-- Communication Section -->
+            <section id="communication" class="rule-section">
+                <h2 class="section-title">Communication</h2>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">10.1 Official Communication Channels</h3>
+                    <div class="rule-content">
+                        <p>The following channels are used for official league communications:</p>
+                        <ul>
+                            <li><strong>Discord Server:</strong> Primary platform for announcements, discussions, and voice
+                                chat</li>
+                            <li><strong>Website:</strong> Race schedules, standings, and official rulebook</li>
+                            <li><strong>Email:</strong> Registration confirmation and major announcements</li>
+                            <li><strong>Social Media:</strong> Public announcements and highlights</li>
+                        </ul>
+                        <p>Drivers are responsible for monitoring the Discord server for announcements and updates.</p>
+                    </div>
+                </div>
+    
+                <div class="rule-subsection">
+                    <h3 class="subsection-title">10.2 Streaming and Content Creation</h3>
+                    <div class="rule-content">
+                        <p>Drivers are encouraged to stream or record their races, with the following guidelines:</p>
+                        <ul>
+                            <li>URC branding may be used in stream overlays and content</li>
+                            <li>Official league sponsors must be visible if using URC overlays</li>
+                            <li>Competing sponsor conflicts should be addressed with league administration</li>
+                        </ul>
+                        <p>The league may feature driver streams on the official channel and social media platforms.</p>
+                        <p>Drivers who regularly create content may be eligible for "Content Creator" status with additional
+                            benefits.</p>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>URC</h2>
+                <p>Ultimate Racing League - The premier F1 25 racing competition for virtual drivers.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="drivers.html">Drivers</a></li>
+                    <li><a href="calendar.html">Calendar</a></li>
+                    <li><a href="standings.html">Standings</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="rules.html">Rules & Regulations</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="signup.html">Join The League</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-newsletter">
+                <h3>Subscribe to Our Newsletter</h3>
+                <p>Stay updated with the latest news, race results, and special announcements.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" class="newsletter-input" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Ultimate Racing Championship (URC). All Rights Reserved.</p>
+        </div>
+    </footer>
+    <script>
+        // DOM Elements
+        const nav = document.querySelector('nav');
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        const rulesNavLinks = document.querySelectorAll('.rules-nav a');
+        const ruleSections = document.querySelectorAll('.rule-section');
+        const pageTransition = document.querySelector('.page-transition');
+
+        // Mobile Navigation
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Scroll event for navbar
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+
+            // Highlight current section in nav
+            highlightCurrentSection();
+        });
+
+        // Smooth scroll for rules navigation
+        rulesNavLinks.forEach(link => {
+            link.addEventListener('click', e => {
+                e.preventDefault();
+
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+
+                window.scrollTo({
+                    top: targetSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+
+                // Update active link
+                rulesNavLinks.forEach(navLink => navLink.classList.remove('active'));
+                link.classList.add('active');
+            });
+        });
+
+        // Highlight current section on scroll
+        function highlightCurrentSection() {
+            let currentSection = '';
+
+            ruleSections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+
+                if (window.scrollY >= sectionTop - 150 && window.scrollY < sectionTop + sectionHeight - 150) {
+                    currentSection = '#' + section.getAttribute('id');
+                }
+            });
+
+            rulesNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        document.querySelectorAll('a').forEach(link => {
+                if (link.href.includes('#') || !link.href.includes(window.location.origin)) return;
+
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const href = link.href;
+
+                    pageTransition.classList.add('active');
+
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 500);
+                });
+            });
+
+        // Call highlight function on load
+        window.addEventListener('load', highlightCurrentSection);
+    </script>
+</body>
+</html>
