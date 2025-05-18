@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URC - Race Calendar</title>
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #ff0000;
+            --secondary: #1e1e1e;
+            --accent: #ffd700;
+            --text: #ffffff;
+            --background: #121212;
+            --card-bg: #1e1e1e;
+            --gold: #d4af37;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        /* Animation Keyframes */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 5%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            padding: 1rem 5%;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-links ul {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin: 0 1rem;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.1s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.1s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        .cta-btn {
+            background: linear-gradient(90deg, var(--primary), #ff4d4d);
+            color: var(--text);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 25px;
+            height: 3px;
+            background-color: var(--text);
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+
+        /* Page Header */
+        .page-header {
+            padding-top: 120px;
+            padding-bottom: 50px;
+            text-align: center;
+            background: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.9)), url('/api/placeholder/1920/800') no-repeat center center/cover;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-title {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .page-subtitle {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #ccc;
+            animation: fadeIn 1s ease forwards 0.3s;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Calendar Section */
+        .calendar-section {
+            padding: 4rem 0;
+            background-color: var(--background);
+            position: relative;
+        }
+
+        .calendar-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                linear-gradient(to right, rgba(18, 18, 18, 0.9), rgba(18, 18, 18, 0.7)),
+                repeating-linear-gradient(45deg, transparent, transparent 10px, var(--gold) 10px, var(--gold) 11px);
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .calendar-container {
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+        }
+
+        .calendar-heading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .calendar-heading img {
+            width: 100px;
+            margin-right: 1rem;
+        }
+
+        .calendar-heading h2 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .calendar-heading span {
+            color: var(--gold);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .page-transition {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--secondary);
+            z-index: 9999;
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+        }
+
+        .page-transition.active {
+            transform: translateY(0);
+        }
+
+        .race-card {
+            position: relative;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .race-card.animated {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .race-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .race-card.break-week {
+            grid-column: 1 / -1;
+            background: linear-gradient(90deg, var(--gold), var(--gold) 70%, white 70%);
+        }
+
+        .race-header {
+            display: flex;
+            align-items: stretch;
+        }
+
+        .race-round {
+            background-color: var(--gold);
+            width: 100px;
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+        }
+
+        .race-round.ncr {
+            font-size: 1.8rem;
+            text-align: center;
+            line-height: 1;
+            padding: 0.5rem;
+        }
+
+        .race-detail {
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .flag-date {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .flag {
+            width: 40px;
+            height: 25px;
+            border-radius: 3px;
+            margin-right: 1rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .race-date {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .race-name {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+        }
+
+        .race-track {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #111;
+            text-transform: uppercase;
+        }
+
+        .break-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            text-transform: uppercase;
+            padding: 2rem;
+        }
+
+        /* Race Info Section */
+        .race-info-section {
+            padding: 4rem 0;
+            background-color: var(--card-bg);
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .info-card {
+            background-color: var(--background);
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .info-card.animated {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .info-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--gold);
+            text-align: center;
+        }
+
+        .info-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .info-desc {
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        .info-list {
+            margin-left: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .info-list li {
+            margin-bottom: 0.8rem;
+            color: #ddd;
+        }
+
+        /* Countdown Section */
+        .countdown-section {
+            padding: 6rem 0;
+            background: linear-gradient(rgba(18, 18, 18, 0.8), rgba(18, 18, 18, 0.8)), url('/api/placeholder/1920/1080') no-repeat center center/cover;
+            background-attachment: fixed;
+            text-align: center;
+        }
+
+        .countdown-title {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .countdown-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            color: var(--gold);
+            animation: fadeIn 1s ease forwards 0.3s;
+        }
+
+        .countdown-timer {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .countdown-box {
+            width: 100px;
+            height: 100px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 1s ease forwards 0.6s;
+            opacity: 0;
+        }
+
+        .countdown-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .countdown-label {
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+        }
+
+        .countdown-cta {
+            animation: fadeIn 1s ease forwards 0.9s;
+            opacity: 0;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0a0a0a;
+            padding: 3rem 5%;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-logo h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-logo p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .footer-links h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            margin-left: 5px;
+        }
+
+        .footer-newsletter {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .footer-newsletter h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
+        }
+
+        .footer-newsletter p {
+            color: #aaa;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+        }
+
+        .newsletter-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+
+        .newsletter-input:focus {
+            outline: none;
+        }
+
+        .newsletter-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            background-color: var(--primary);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-btn:hover {
+            background-color: #ff2d2d;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-bottom p {
+            color: #777;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-link {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media screen and (max-width: 1024px) {
+            .calendar-grid {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            }
+
+            .countdown-box {
+                width: 80px;
+                height: 80px;
+            }
+
+            .countdown-value {
+                font-size: 2rem;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                right: -100%;
+                top: 80px;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--secondary);
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.5s ease;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links ul {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-links li {
+                margin: 1.5rem 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hamburger.active div:nth-child(1) {
+                transform: rotate(-45deg) translate(-5px, 6px);
+            }
+
+            .hamburger.active div:nth-child(2) {
+                opacity: 0;
+            }
+
+            .hamburger.active div:nth-child(3) {
+                transform: rotate(45deg) translate(-5px, -6px);
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .page-subtitle {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .calendar-heading h2 {
+                font-size: 2.5rem;
+            }
+
+            .calendar-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .race-card.break-week {
+                grid-column: auto;
+            }
+
+            .countdown-timer {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .countdown-box {
+                width: 70px;
+                height: 70px;
+            }
+
+            .countdown-value {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media screen and (max-width: 576px) {
+            .page-title {
+                font-size: 1.8rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .calendar-heading img {
+                width: 70px;
+            }
+
+            .calendar-heading h2 {
+                font-size: 2rem;
+            }
+
+            .race-round {
+                width: 70px;
+                font-size: 2rem;
+            }
+
+            .race-name {
+                font-size: 1.4rem;
+            }
+
+            .race-track {
+                font-size: 1rem;
+            }
+
+            .break-title {
+                font-size: 1.8rem;
+            }
+
+            .countdown-box {
+                width: 60px;
+                height: 60px;
+            }
+
+            .countdown-value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Page Transition -->
+    <div class="page-transition"></div>
+    <!-- Navigation -->
+    <nav>
+        <div class="logo">
+            <img src="assets/images/logo.png" alt="URC Logo">
+            <h1>URC</h1>
+        </div>
+        <div class="nav-links">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="drivers.html">Drivers</a></li>
+                <li><a href="calendar.html" class="active">Calendar</a></li>
+                <li><a href="standings.html">Standings</a></li>
+                <li><a href="gallery.html">Gallery</a></li>
+                <li><a href="rules.html">Rules</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+        <a href="signup.html" class="cta-btn">Join Now</a>
+        <div class="hamburger">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <h1 class="page-title">RACE CALENDAR</h1>
+        <p class="page-subtitle">The complete schedule for the URC Season 1 Championship</p>
+    </header>
+
+    <!-- Calendar Section -->
+    <section class="calendar-section">
+        <div class="container calendar-container">
+            <div class="calendar-heading">
+                <img src="assets/images/logo.png" alt="URC Logo">
+                <h2><span>SEASON 1</span> CALENDAR</h2>
+            </div>
+
+            <div class="calendar-grid">
+                <!-- Race 1 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R1</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/australia.webp" alt="Australia Flag" class="flag">
+                                <div class="race-date">03 JUN</div>
+                            </div>
+                            <div class="race-name">AUSTRALIA</div>
+                            <div class="race-track">MELBOURNE</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Race 2 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R2</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/mexico.png" alt="Mexico Flag" class="flag">
+                                <div class="race-date">10 JUN</div>
+                            </div>
+                            <div class="race-name">MEXICO</div>
+                            <div class="race-track">MEXICO</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Race 3 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R3</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/japan.png" alt="Japan Flag" class="flag">
+                                <div class="race-date">17 JUN</div>
+                            </div>
+                            <div class="race-name">JAPAN</div>
+                            <div class="race-track">SUZUKA</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Race 4 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R4</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/italy.png" alt="San Marino Flag" class="flag">
+                                <div class="race-date">24 JUN</div>
+                            </div>
+                            <div class="race-name">SAN MARINO</div>
+                            <div class="race-track">IMOLA</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Break Week 1 -->
+                <div class="race-card break-week">
+                    <div class="race-header">
+                        <div class="race-round">OFF</div>
+                        <div class="break-title">BREAK WEEK</div>
+                    </div>
+                </div>
+
+                <!-- Race 5 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R5</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/austria.svg" alt="Austria Flag" class="flag">
+                                <div class="race-date">08 JUL</div>
+                            </div>
+                            <div class="race-name">AUSTRIA</div>
+                            <div class="race-track">SPIELBERG</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Race 6 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R6</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/usa.webp" alt="USA Flag" class="flag">
+                                <div class="race-date">15 JUL</div>
+                            </div>
+                            <div class="race-name">USA</div>
+                            <div class="race-track">AUSTIN</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Race 7 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R7</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/belgium.png" alt="Belgium Flag" class="flag">
+                                <div class="race-date">22 JUL</div>
+                            </div>
+                            <div class="race-name">BELGIUM</div>
+                            <div class="race-track">SPA</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Non-Championship Round -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round ncr">NCR</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/netherlands.webp" alt="Netherlands Flag" class="flag">
+                                <div class="race-date">29 JUL</div>
+                            </div>
+                            <div class="race-name">NON-CHAMP ROUND</div>
+                            <div class="race-track">ZANDVOORT</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Break Week 2 -->
+                <div class="race-card break-week">
+                    <div class="race-header">
+                        <div class="race-round">OFF</div>
+                        <div class="break-title">BREAK WEEK</div>
+                    </div>
+                </div>
+
+                <!-- Race 8 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R8</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/singapore.webp" alt="Singapore Flag" class="flag">
+                                <div class="race-date">12 AUG</div>
+                            </div>
+                            <div class="race-name">SINGAPORE</div>
+                            <div class="race-track">SINGAPORE</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Race 9 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R9</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/canada.svg" alt="Canada Flag" class="flag">
+                                <div class="race-date">19 AUG</div>
+                            </div>
+                            <div class="race-name">CANADA</div>
+                            <div class="race-track">MONTREAL</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Race 10 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R10</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/usa.webp" alt="USA Flag" class="flag">
+                                <div class="race-date">26 AUG</div>
+                            </div>
+                            <div class="race-name">USA</div>
+                            <div class="race-track">LAS VEGAS</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Race 11 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R11</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/bahrain.png" alt="Bahrain Flag" class="flag">
+                                <div class="race-date">02 SEP</div>
+                            </div>
+                            <div class="race-name">BAHRAIN</div>
+                            <div class="race-track">BAHRAIN</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Break Week 3 -->
+                <div class="race-card break-week">
+                    <div class="race-header">
+                        <div class="race-round">OFF</div>
+                        <div class="break-title">BREAK WEEK</div>
+                    </div>
+                </div>
+
+                <!-- Race 12 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R12</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/brazil.png" alt="Brazil Flag" class="flag">
+                                <div class="race-date">16 SEP</div>
+                            </div>
+                            <div class="race-name">BRAZIL</div>
+                            <div class="race-track">INTERLAGOS</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Race 13 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R13</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/hungary.svg" alt="Hungary Flag" class="flag">
+                                <div class="race-date">23 SEP</div>
+                            </div>
+                            <div class="race-name">HUNGARY</div>
+                            <div class="race-track">HUNGARORING</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Race 14 -->
+                <div class="race-card">
+                    <div class="race-header">
+                        <div class="race-round">R14</div>
+                        <div class="race-detail">
+                            <div class="flag-date">
+                                <img src="assets/images/uae.svg" alt="Abu Dhabi Flag" class="flag">
+                                <div class="race-date">30 SEP</div>
+                            </div>
+                            <div class="race-name">ABU DHABI</div>
+                            <div class="race-track">YAS MARINA</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Race Info Section -->
+    <section class="race-info-section">
+        <div class="container">
+            <h2 class="section-title">Race Information</h2>
+            <div class="info-cards">
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <h3 class="info-title">Race Schedule</h3>
+                    <p class="info-desc">
+                        All races follow a standard schedule to help drivers plan their participation:
+                    </p>
+                    <ul class="info-list">
+                        <li><strong>12:00 PM AEST (Friday):</strong> Announcement is made for driver check-in</li>
+                        <li><strong>6:00 PM AEST (Monday):</strong> Mandatory drivers' briefing</li>
+                        <li><strong>6:35 PM AEST (Monday):</strong> Lobby closes and qualifying begins</li>
+                        <li><strong>6:55 PM AEST (Monday) (approx):</strong> Race start</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon
+                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
+                            </polygon>
+                        </svg>
+                    </div>
+                    <h3 class="info-title">Race Format</h3>
+                    <p class="info-desc">
+                        Each round includes the following components:
+                    </p>
+                    <ul class="info-list">
+                        <li><strong>Qualifying:</strong> 17 minute qualifying session</li>
+                        <li><strong>Race:</strong> 50% race distance, no formation lap</li>
+                        <li><strong>Weather:</strong> Dynamic conditions</li>
+                        <li><strong>Damage:</strong> Standard simulation</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <div class="info-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="info-title">Special Events</h3>
+                    <p class="info-desc">
+                        Throughout the season, special events add variety to the championship:
+                    </p>
+                    <ul class="info-list">
+                        <li><strong>Non-Championship Round:</strong> Experimental format with reverse grids at Zandvoort
+                        </li>
+                        <li><strong>Break Weeks:</strong> Often feature special community events</li>
+                        <li><strong>Season Finale:</strong> Double points for our Abu Dhabi finale</li>
+                        <li><strong>Post-Season:</strong> All-Star exhibition race featuring the season's top drivers
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Countdown Section -->
+    <section class="countdown-section">
+        <div class="container">
+            <h2 class="countdown-title">NEXT RACE: R1 AUSTRALIAN GRAND PRIX</h2>
+            <h3 class="countdown-subtitle">JUNE 3, 2025 - 6:30 PM AEST</h3>
+
+            <div class="countdown-timer">
+                <div class="countdown-box">
+                    <div class="countdown-value" id="days">00</div>
+                    <div class="countdown-label">Days</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-value" id="hours">00</div>
+                    <div class="countdown-label">Hours</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-value" id="minutes">00</div>
+                    <div class="countdown-label">Minutes</div>
+                </div>
+                <div class="countdown-box">
+                    <div class="countdown-value" id="seconds">00</div>
+                    <div class="countdown-label">Seconds</div>
+                </div>
+            </div>
+
+            <div class="countdown-cta">
+                <a href="signup.html" class="cta-btn">Join The Grid</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h2>URC</h2>
+                <p>Ultimate Racing Championship - The premier F1 25 racing competition for virtual drivers.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z">
+                            </path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="drivers.html">Drivers</a></li>
+                    <li><a href="calendar.html">Calendar</a></li>
+                    <li><a href="standings.html">Standings</a></li>
+                </ul>
+            </div>
+            <div class="footer-links">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="rules.html">Rules & Regulations</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="signup.html">Join The League</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="privacy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-newsletter">
+                <h3>Subscribe to Our Newsletter</h3>
+                <p>Stay updated with the latest news, race results, and special announcements.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email address" class="newsletter-input" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Ultimate Racing Championship (URC). All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // DOM Elements
+        const nav = document.querySelector('nav');
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+        const raceCards = document.querySelectorAll('.race-card');
+        const infoCards = document.querySelectorAll('.info-card');
+        const pageTransition = document.querySelector('.page-transition');
+
+        // Countdown Elements
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+
+        // Mobile Navigation
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Scroll event for navbar and animations
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+
+            // Animate race cards on scroll
+            raceCards.forEach((card, index) => {
+                const cardTop = card.getBoundingClientRect().top;
+                if (cardTop < window.innerHeight - 100) {
+                    card.classList.add('animated');
+                    card.style.animationDelay = `${index * 0.1}s`;
+                }
+            });
+
+            // Animate info cards on scroll
+            infoCards.forEach((card, index) => {
+                const cardTop = card.getBoundingClientRect().top;
+                if (cardTop < window.innerHeight - 100) {
+                    card.classList.add('animated');
+                    card.style.animationDelay = `${index * 0.1}s`;
+                }
+            });
+        });
+
+        // Countdown Timer
+        function updateCountdown() {
+            // Set the date we're counting down to - R1 race date
+            const raceDate = new Date("Jun 3, 2025 18:30:00").getTime();
+
+            // Get current date and time
+            const now = new Date().getTime();
+
+            // Find the distance between now and the race date
+            const distance = raceDate - now;
+
+            // Time calculations for days, hours, minutes and seconds
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Display the result
+            daysEl.innerHTML = days.toString().padStart(2, '0');
+            hoursEl.innerHTML = hours.toString().padStart(2, '0');
+            minutesEl.innerHTML = minutes.toString().padStart(2, '0');
+            secondsEl.innerHTML = seconds.toString().padStart(2, '0');
+
+            // If the countdown is finished, show race day message
+            if (distance < 0) {
+                clearInterval(countdownInterval);
+                document.querySelector('.countdown-title').innerHTML = "RACE DAY!";
+                document.querySelector('.countdown-subtitle').innerHTML = "TUNE IN FOR LIVE COVERAGE";
+                daysEl.innerHTML = "00";
+                hoursEl.innerHTML = "00";
+                minutesEl.innerHTML = "00";
+                secondsEl.innerHTML = "00";
+            }
+        }
+
+        document.querySelectorAll('a').forEach(link => {
+                if (link.href.includes('#') || !link.href.includes(window.location.origin)) return;
+
+                link.addEventListener('click', e => {
+                    e.preventDefault();
+                    const href = link.href;
+
+                    pageTransition.classList.add('active');
+
+                    setTimeout(() => {
+                        window.location.href = href;
+                    }, 500);
+                });
+            });
+
+        // Update the countdown every 1 second
+        updateCountdown();
+        const countdownInterval = setInterval(updateCountdown, 1000);
+
+        // Call animations on load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                // Trigger scroll to start animations
+                window.dispatchEvent(new Event('scroll'));
+            }, 500);
+        });
+    </script>
+</body>
+
+</html>
